@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:phoenix_theme/phoenix_theme.dart';
+import 'package:yaru/yaru.dart';
+
+import '../../common/view/theme.dart';
+import '../../common/view/ui_constants.dart';
+import '../../extensions/target_platform_x.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/l10n.dart';
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key, this.body});
+
+  final Widget? body;
+
+  @override
+  Widget build(BuildContext context) {
+    final phoenix = phoenixTheme(color: kStarterAppDefaultColor);
+    final phoenixLightWithFont = isLinux
+        ? phoenix.lightTheme
+        : applyChineseFontToPhoenixTheme(
+            lightTheme: phoenix.lightTheme,
+            darkTheme: phoenix.darkTheme,
+          );
+    final phoenixDarkWithFont = isLinux
+        ? phoenix.darkTheme
+        : applyChineseFontToPhoenixDarkTheme(darkTheme: phoenix.darkTheme);
+
+    return MaterialApp(
+      theme: isLinux ? yaruLight : phoenixLightWithFont,
+      darkTheme: isLinux ? yaruDark : phoenixDarkWithFont,
+      title: '',
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: supportedLocales,
+      home: Scaffold(
+        appBar: const YaruWindowTitleBar(
+          border: BorderSide.none,
+          backgroundColor: Colors.transparent,
+        ),
+        body:
+            body ??
+            Center(
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: isLinux
+                            ? const YaruCircularProgressIndicator()
+                            : const CircularProgressIndicator.adaptive(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+      ),
+    );
+  }
+}
